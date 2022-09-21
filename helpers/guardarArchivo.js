@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const archivo = './db/data.txt';
+const archivo = './db/data.json';
 
 const guardarDB = (data) => {
     fs.writeFileSync(archivo,JSON.stringify(data));
