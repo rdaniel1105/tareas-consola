@@ -1,115 +1,98 @@
 const Tarea = require("./tarea");
 
 class Tareas {
+  taskList = {};
 
-    _listado = {};
+  constructor() {
+    this.taskList = {};
+  }
 
-    get listadoArr() {
-        const listado = [];
-        Object.keys(this._listado).forEach(key => {
-            
-            listado.push( this._listado[key] );
-        });
-
-        return listado;
-    }
-
-    constructor() {
-        this._listado = {};
-    }
-
-    borrarTarea( id = '') {
-        if (this._listado[id]) {
-            delete this._listado[id];
-        }
-    }
-
-    crearTareasFromArray( tareas =[] ) {
-        tareas.forEach(tarea => {
-            this._listado[tarea.id] = tarea;
-        });
-    }
-
-    crearTarea(desc = ''){
-        const tarea = new Tarea(desc);
-        this._listado[tarea.id] = tarea;
-    }
-
-    listadoCompleto() {
-
-        
-        console.log();
-        for (let i = 0; i < this.listadoArr.length; i++) {
-            
-            const { desc, completadoEn } = this.listadoArr[i];
-            
-            // const idx = `${ i +1 }`.green;
-            // if (completadoEn == 'Pendiente') {
-            //     console.log(`${i + 1}. ${desc} :: `,`${completadoEn}`.red);
-            // } else {
-            //     console.log(`${ i +1 }. ${desc} :: `,`${completadoEn}`.green);
-            // }
-
-
-            //Si quiero hacerlo con null al comienzo
-            const idx = `${ i +1 }`.green;
-            const estado = ( completadoEn ) 
-                                ? 'Completada'.green
-                                : 'Pendiente'.red;
-            console.log(`${ idx }. ${desc} :: ${estado}`);
-            
-        }
-         
-    }
-
-    listarPendientesCompletadas( completadas = true ) {
-
-
-        let conteo = 0;
-        
-        this.listadoArr.forEach(({desc,completadoEn}) => {
-        
-            const estado = ( completadoEn ) 
-                                ? 'Completada'.green
-                                : 'Pendiente'.red;
-
-            if (completadas) {
-            if (completadoEn) {
-                conteo++;    
-                const conteoLog = `${conteo}.`.green;
-                console.log(`${ conteoLog } ${desc} :: ${completadoEn}`);
-            }      
-        } else {
-            if (!completadoEn) {
-                conteo++;   
-                const conteoLog = `${conteo}.`.green;
-                console.log(`${ conteoLog } ${desc} :: ${estado}`);
-            }
-        }
-
+  get tasksArray() {
+    let taskList = [];
+    Object.keys(this.taskList).forEach((key) => {
+      //   listado.push(this.taskList[key]);
+      taskList = [...taskList, this.taskList[key]];
     });
+
+    return taskList;
+  }
+
+  deleteTask(id = "") {
+    if (this.taskList[id]) {
+      delete this.taskList[id];
     }
+  }
 
-    toggleCompletadas( ids = [] ) {
-        ids.forEach( id => {
+  addArrayToTaskList(taskArray = []) {
+    taskArray.forEach((task) => {
+      this.taskList[task.id] = task;
+    });
+  }
 
-            const tarea = this._listado[id];
-            if (!tarea.completadoEn) {
-                tarea.completadoEn = new Date().toISOString();
-            }
+  createTask(taskDescription = "") {
+    const tarea = new Tarea(taskDescription);
+    this.taskList[tarea.id] = tarea;
+  }
 
-        });
+  displayTaskList() {
+    console.log();
+    for (let i = 0; i < this.tasksArray.length; i++) {
+      const { taskDescription, dateOfCompletion } = this.tasksArray[i];
 
-        this.listadoArr.forEach( tarea => {
-            if ( !ids.includes(tarea.id)) {
-                this._listado[tarea.id].completadoEn = null;
-            }
-        })
+      // const idx = `${ i +1 }`.green;
+      // if (dateOfCompletion == 'Pendiente') {
+      //     console.log(`${i + 1}. ${taskDescription} :: `,`${dateOfCompletion}`.red);
+      // } else {
+      //     console.log(`${ i +1 }. ${taskDescription} :: `,`${dateOfCompletion}`.green);
+      // }
 
+      //Si quiero hacerlo con null al comienzo
+      const index = `${i + 1}`.green;
+      const status = dateOfCompletion ? "Completada".green : "Pendiente".red;
+      console.log(`${index}. ${taskDescription} :: ${status}`);
     }
+  }
 
+  displayCompletedTasks(completed) {
+    let conteo = 0;
+
+    this.tasksArray.forEach(({ taskDescription, dateOfCompletion }) => {
+      if (dateOfCompletion) {
+        completed.green;
+        conteo++;
+        const conteoLog = `${conteo}.`.green;
+        console.log(`${conteoLog} ${taskDescription} :: ${dateOfCompletion}`);
+      }
+    });
+  }
+
+  displayPendingTasks(pending) {
+    let conteo = 0;
+
+    this.tasksArray.forEach(({ taskDescription, dateOfCompletion }) => {
+      if (!dateOfCompletion) {
+        const status = pending.red;
+        conteo++;
+        const conteoLog = `${conteo}.`.green;
+        console.log(`${conteoLog} ${taskDescription} :: ${status}`);
+      }
+    });
+  }
+
+  toggleTasksStatus(ids = []) {
+    ids.forEach((id) => {
+      const tarea = this.taskList[id];
+      if (!tarea.dateOfCompletion) {
+        tarea.dateOfCompletion = new Date().toISOString();
+      }
+    });
+
+    this.tasksArray.forEach((tarea) => {
+      if (!ids.includes(tarea.id)) {
+        this.taskList[tarea.id].dateOfCompletion = null;
+      }
+    });
+  }
 }
-
-
 
 module.exports = Tareas;
