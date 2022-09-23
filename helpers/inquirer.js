@@ -5,7 +5,9 @@ const preguntas = [
   {
     type: "list",
     name: "opcion",
-    message: "Qué desea hacer?",
+    message: `${"Qué desea hacer?"}     --${
+      "Use las teclas direccionales o numeros".green
+    }  --${"Presione ENTER para seleccionar".green}`,
     choices: [
       {
         value: "1",
@@ -48,111 +50,140 @@ const questions = [
 ];
 
 const inquirerMenu = async () => {
-  console.clear();
-  console.log("=========================".rainbow);
-  console.log("  Seleccione una opción  ".green);
-  console.log("=========================\n".rainbow);
+  try {
+    console.clear();
+    console.log("=========================".rainbow);
+    console.log("  Seleccione una opción  ".green);
+    console.log("=========================\n".rainbow);
 
-  const { opcion } = await inquirer.prompt(preguntas);
-  return opcion;
+    const { opcion } = await inquirer.prompt(preguntas);
+    return opcion;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const pause = async () => {
-  console.log(`\n`);
-  await inquirer.prompt(questions);
+  try {
+    console.log(`\n`);
+    await inquirer.prompt(questions);
+  } catch (error) {
+    throw error;
+  }
 };
 
 const displayInput = async (message) => {
-  const question = [
-    {
-      type: "input",
-      name: "taskDescription",
-      message,
-      validate(value) {
-        if (value.length === 0) {
-          return "Por favor ingrese un valor";
-        }
-        return true;
+  try {
+    const question = [
+      {
+        type: "input",
+        name: "taskDescription",
+        message,
+        validate(value) {
+          if (value.length === 0) {
+            return "Por favor ingrese un valor";
+          }
+          return true;
+        },
       },
-    },
-  ];
-  const { taskDescription } = await inquirer.prompt(question);
-  return taskDescription;
+    ];
+    const { taskDescription } = await inquirer.prompt(question);
+    return taskDescription;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const taskListToDelete = async (tareas = []) => {
-  const choices = tareas.map((tarea, i) => {
-    const idx = `${i + 1}.`.green;
+  try {
+    const choices = tareas.map((tarea, i) => {
+      const idx = `${i + 1}.`.green;
 
-    return {
-      value: tarea.id,
-      name: `${idx} ${tarea.taskDescription}`,
-    };
-  });
+      return {
+        value: tarea.id,
+        name: `${idx} ${tarea.taskDescription}`,
+      };
+    });
 
-  choices.unshift({
-    value: "0",
-    name: "0.".green + "Cancelar",
-  });
+    choices.unshift({
+      value: "0",
+      name: "0.".green + "Cancelar",
+    });
 
-  const preguntas = [
-    {
-      type: "list",
-      name: "id",
-      message: "Borrar",
-      choices,
-    },
-  ];
+    const preguntas = [
+      {
+        type: "list",
+        name: "id",
+        message: "Borrar",
+        choices,
+      },
+    ];
 
-  const { id } = await inquirer.prompt(preguntas);
-  return id;
+    const { id } = await inquirer.prompt(preguntas);
+    return id;
 
-  // {
-  //         value: '1',
-  //         name : `${'1.'.green} Crear tarea`
-  // },
+    // {
+    //         value: '1',
+    //         name : `${'1.'.green} Crear tarea`
+    // },
+  } catch (error) {
+    throw error;
+  }
 };
 
 const confirmElementToDelete = async (message) => {
-  const question = [
-    {
-      type: "confirm",
-      name: "ok",
-      message,
-    },
-  ];
+  try {
+    const question = [
+      {
+        type: "confirm",
+        name: "ok",
+        message,
+      },
+    ];
 
-  const { ok } = await inquirer.prompt(question);
-  return ok;
+    const { ok } = await inquirer.prompt(question);
+    return ok;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const displayTasksChecklist = async (tareas = []) => {
-  const choices = tareas.map((tarea, i) => {
-    const index = `${i + 1}.`.green;
+  try {
+    const choices = tareas.map((tarea, i) => {
+      const index = `${i + 1}.`.green;
 
-    return {
-      value: tarea.id,
-      name: `${index} ${tarea.taskDescription}`,
-      checked: tarea.completadoEn ? true : false,
-    };
-  });
+      return {
+        value: tarea.id,
+        name: `${index} ${tarea.taskDescription}`,
+        checked: tarea.dateOfCompletion ? true : false,
+      };
+    });
 
-  const pregunta = [
-    {
-      type: "checkbox",
-      name: "ids",
-      message: "Selecciones",
-      choices,
-    },
-  ];
+    const pregunta = [
+      {
+        type: "checkbox",
+        name: "ids",
+        message: `${"Selecciones:"}  --${
+          "Use las teclas direccionales para navegar las opciones".green
+        }, --${
+          "Presione <espacio> para seleccionar, <a> para seleccionar todos, <i> para invertir selección y <enter> para continuar"
+            .green
+        }`,
+        choices,
+      },
+    ];
 
-  const { ids } = await inquirer.prompt(pregunta);
-  return ids;
+    const { ids } = await inquirer.prompt(pregunta);
+    return ids;
 
-  // {
-  //         value: '1',
-  //         name : `${'1.'.green} Crear tarea`
-  // },
+    // {
+    //         value: '1',
+    //         name : `${'1.'.green} Crear tarea`
+    // },
+  } catch (error) {
+    throw error;
+  }
 };
 
 module.exports = {

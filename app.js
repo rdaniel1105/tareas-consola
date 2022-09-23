@@ -28,41 +28,62 @@ const main = async () => {
 
     switch (option) {
       case "1":
-        const taskDescription = await displayInput("Descripción: ");
-        tareas.createTask(taskDescription);
-        break;
+        try {
+          const taskDescription = await displayInput("Descripción: ");
+          tareas.createTask(taskDescription);
+          break;
+        } catch (error) {
+          throw error;
+        }
       case "2":
+        console.clear();
         tareas.displayTaskList();
         break;
       case "3":
-        tareas.displayCompletedTasks('Completado');
+        console.clear();
+        tareas.displayCompletedTasks("Completado");
         break;
       case "4":
-        tareas.displayPendingTasks('Pendiente');
+        console.clear();
+        tareas.displayPendingTasks("Pendiente");
         break;
       case "5":
-        const ids = await displayTasksChecklist(tareas.tasksArray);
-        tareas.toggleTasksStatus(ids);
-        break;
+        try {
+          console.clear();
+          const ids = await displayTasksChecklist(tareas.tasksArray);
+          tareas.toggleTasksStatus(ids);
+          break;
+        } catch (error) {
+          throw error;
+        }
+
       case "6":
-        let ok;
+        try {
+          let ok;
 
-        const id = await taskListToDelete(tareas.tasksArray);
-        if (id !== "0") {
-          ok = await confirmElementToDelete("Está seguro?");
+          const id = await taskListToDelete(tareas.tasksArray);
+          if (id !== "0") {
+            ok = await confirmElementToDelete("Está seguro?");
+          }
+
+          if (ok) {
+            tareas.deleteTask(id);
+            console.log("Tarea borrada");
+          }
+
+          break;
+        } catch (error) {
+          throw error;
         }
-
-        if (ok) {
-          tareas.deleteTask(id);
-          console.log("Tarea borrada");
-        }
-
-        break;
     }
 
     guardarDB(tareas.tasksArray);
 
-    await pause();
+    try {
+      await pause();
+    } catch (error) {
+      throw error;
+    }
   } while (option !== "0");
 
   //pausa();
